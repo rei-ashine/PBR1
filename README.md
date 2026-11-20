@@ -67,6 +67,7 @@ data/
 │   ├── Complex_8JZN/  # Complexes of the 8JZN-based model and compounds
 │   ├── Complex_AlphaFold/  # Complexes of the AlphaFold-based model and compounds
 │   ├── PBR1/          # Energy-minimized models and pocket search results
+│   ├── docking_scores.csv  # Docking scores collected from the sessions below
 │   └── Sessions/PBR1/
 │       ├── PBR1_*/    # Structure preparation and pocket search sessions
 │       └── MD/        # Docking sessions
@@ -82,6 +83,35 @@ data/
 [NOTE]: Three complexes in `data/MolDesk/Complex_*/` have no matching docking session
 in `data/MolDesk/Sessions/PBR1/MD/`: the FAD and NAD complexes of the 7YUY-based model,
 and the FAD complex of the AlphaFold-based model.
+
+## Docking Scores
+`data/MolDesk/docking_scores.csv` collects the scores of all 70 poses
+(10 poses from each of the 7 docking sessions in `data/MolDesk/Sessions/PBR1/MD/`).
+The values are read from the `output.score` file of each session's Docking step,
+from its `AFTER MINIMIZE RANKING` block. `kept_in_complex` marks the pose that was
+added to the complex in `data/MolDesk/Complex_*/`, identified from the
+`ligand_info.score` file of the session's Add Molecule step.
+
+The pose kept in each complex:
+
+| Model | Compound | Site | Best score | Kept pose | Score | dG (kcal/mol) | LE/10 |
+|---|---|---|---:|---:|---:|---:|---:|
+| 7YUY | FADH2 | pocket11 | -3.9507 | rank 2 | -3.4380 | -8.66 | -0.65 |
+| 7YUY | FMN | pocket11 | -3.0091 | rank 1 | -3.0091 | -7.31 | -0.97 |
+| 7YUY | FMNH2 | pocket11 | -3.1161 | rank 3 | -3.0689 | -7.72 | -0.99 |
+| 7YUY | NADP | pocket11 | -3.7561 | rank 1 | -3.7561 | -7.95 | -0.78 |
+| 7YUY | NMN | pocket11 | -2.7203 | rank 1 | -2.7203 | -6.26 | -1.24 |
+| 8JZN | FADH2 | point8 | -5.2426 | rank 1 | -5.2426 | -12.41 | -0.99 |
+| AlphaFold | NMN | pocket8 | -2.3761 | rank 2 | -2.3356 | -5.67 | -1.06 |
+
+A lower score is better. `rank` is the position of the pose in the session's
+`AFTER MINIMIZE RANKING` block, which lists the poses in their before-minimization
+order, so the first row is not always the best-scoring pose after minimization.
+In three sessions the pose kept in the complex is not the best-scoring one
+(7YUY with FADH2 and FMNH2, and the AlphaFold-based model with NMN).
+
+FADH2 in `point8` of the 8JZN-based model has the best score of the seven,
+and it is the complex that was analyzed with PDBsum.
 
 ## Releases
 - [v1.0.0](https://github.com/rei-ashine/PBR1/releases/tag/v1.0.0):
